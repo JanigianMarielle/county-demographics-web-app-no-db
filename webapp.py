@@ -16,35 +16,47 @@ def home():
 def render_fact():
     states = get_state_options()
     state = request.args.get('state')
-    county = name_orgin(state)
-    fact = "In " + state + ", The average time it takes to get to work is" + county + "."
-    return render_template('home.html', state_options=states, funFact=fact)
+    county = greatest_time_county(state)
+    county = county_greatest_change(state)
+    fact = "In " + state + ", The greatest amount of time it takes to commute to work" + county + "."
+    fact2 = "In " + state + ", The greatest change in popultion" + county + "."
+    return render_template('home.html', states=states, funFact=fact, funFact2=fact2)
     
-def get_state_options():
+def get_states():
     """Return the html code for the drop down menu.  Each option is a state abbreviation from the demographic data."""
     with open('miscellaneous.json') as miscellaneous_data:
-        time = json.load(miscellaneous_data)
+        counties = json.load(miscellaneous_data)
     states=[]
     for c in counties:
         if c["State"] not in states:
             states.append(c["State"])
     options=""
-    for s in states:
-        options += Markup("<option value=\"" + s + "\">" + s + "</option>") #Use Markup so <, >, " are not escaped lt, gt, etc.
-    return options
+return states
 
-def name_origin(state):
-    """Return the way the state recieved its name."""
+def greatest_time_county(state):
+    """Return the county that has the largest communute to work time."""
     with open('miscellaneous.json') as miscellaneous:
-        time = json.load(miscellaneous_data)
+        counties = json.load(miscellaneous_data)
     highest=0
-    miscellaneous = ""
-    for t in time:
-        if t["State"] == state:
-            if t["Time"]["Number of minutes it takes to commute to work"] > highest:
-                highest = m["Age"]["Percent Under 18 Years"]
-                miscellaneous = t["Time"]
-    return time
+    county = ""
+    for c in counties:
+        if c["State"] == state:
+            if c["Time"]["Number of minutes it takes to commute to work"] > highest:
+                highest = c["Time"]["Number of minutes it takes to commute to work"]
+                county = c["County"]
+    return county
+    
+def county_greatest_change(state):
+    """Return the county that has the greatest percent chnage in population."""
+    with open('population.json') as population:
+        counties = json.load(population_data)
+        highest=0
+        county=""
+        for c in counties:
+            if c["State"] == state:
+                if c["Time"]["Greatest change in popultion"] > highest:
+                    highest c["Percent"]["Greatest change in popultion"]
+                    county = c["County"]
 
 def is_localhost():
     """ Determines if app is running on localhost or not
