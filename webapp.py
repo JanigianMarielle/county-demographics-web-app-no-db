@@ -10,7 +10,7 @@ app = Flask(state_fun_fact)
 def home():
     states = get_state_options()
     #print(states)
-    return render_template('home.html', state_options=states)
+    return render_template('home.html', states=states)
 
 @app.route('/showFact')
 def render_fact():
